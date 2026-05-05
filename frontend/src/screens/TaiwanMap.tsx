@@ -3,8 +3,6 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { SPOTS } from '../data/spots'
 import type { Spot } from '../data/spots'
-import { useCWAData } from '../hooks/useCWAData'
-
 const ESRI_TILE = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
 const ESRI_ATTR = 'Tiles &copy; Esri'
 
@@ -15,37 +13,8 @@ const REGIONS: Record<string, { label: string; bounds: L.LatLngBoundsExpression;
   west:  { label: '西部', bounds: [[22.0, 120.0], [25.0, 121.2]], color: '#8b5cf6' },
 }
 
-function pinColor(waveHeight: number | null, windSpeed: number | null): string {
-  const h = waveHeight ?? 0
-  const w = windSpeed ?? 0
-  if (h > 2.0 || w > 20) return '#ef4444'
-  if (h > 1.5 || w > 15) return '#f97316'
-  if (h > 1.0 || w > 10) return '#eab308'
-  return '#22c55e'
-}
 
-function SpotPin({ map, spot }: { map: L.Map; spot: Spot }) {
-  const { data } = useCWAData(spot.id)
-  const snap = data?.snapshot
 
-  const color = snap
-    ? pinColor(snap.wave_height ?? null, snap.wind_speed ?? null)
-    : '#9ca3af'
-
-  useEffect(() => {
-    const icon = L.divIcon({
-      className: '',
-      html: `<div style="width:12px;height:12px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.5)"></div>`,
-      iconAnchor: [6, 6],
-    })
-    const marker = L.marker([spot.lat, spot.lng], { icon })
-      .bindTooltip(spot.name, { permanent: false, direction: 'top' })
-    marker.addTo(map)
-    return () => { marker.remove() }
-  }, [map, spot, color])
-
-  return null
-}
 
 export default function TaiwanMap({ onSelectSpot }: { onSelectSpot: (s: Spot) => void }) {
   const containerRef = useRef<HTMLDivElement>(null)

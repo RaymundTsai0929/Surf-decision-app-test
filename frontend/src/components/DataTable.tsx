@@ -124,7 +124,7 @@ export default function DataTable({ hourly, currentHour }: Props) {
     },
     {
       label: '潮汐 m',
-      render: (h, i) => (
+      render: (h, _i) => (
         <td key="tid" style={{ background: h.tide !== null ? tideColor(h.tide, tidMin, tidMax) : undefined }}
           className="px-2 py-1 text-center text-xs font-medium text-white">
           {fmt(h.tide)}

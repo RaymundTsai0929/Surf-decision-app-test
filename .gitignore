@@ -1,0 +1,19 @@
+.spectra/
+openspec/.vector-search.db*
+
+# Environment variables — never commit
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+frontend/node_modules/
+backend/__pycache__/
+backend/**/__pycache__/
+
+# Build output
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db

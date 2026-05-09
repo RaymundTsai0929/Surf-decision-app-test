@@ -28,3 +28,24 @@ python -m streamlit run src/streamlit_app.py
 
 - 本原型含大量前端疊圖邏輯（小黃點、粒子層、方向條示意）。
 - `zoom >= 19` 時會自動關閉小黃點疊圖以便觀察底圖。
+
+## Render 部署（推薦）
+
+本目錄已提供：
+
+- `requirements.txt`
+- `render.yaml`
+
+### 操作步驟
+
+1. 到 Render 建立 **New + -> Blueprint**（或 Web Service）。
+2. 連接 GitHub repo：`RaymundTsai0929/Surf-decision-app-test`。
+3. 若使用 Blueprint，Render 會讀取 `uploads/W1/render.yaml` 自動建立服務。
+4. 在 Render 環境變數填入：
+   - `CWA_AUTH_CODE`
+   - `GOOGLE_API_KEY`
+5. 部署完成後取得 `https://...onrender.com` 網址。
+
+### 作業繳交建議
+
+將 Render 產生的 HTTPS 網址放入 `url.txt` 第一行，再附 `thumbnail.png`。

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: w1-surf-streamlit
+    env: python
+    plan: free
+    rootDir: uploads/W1
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run src/streamlit_app.py --server.address 0.0.0.0 --server.port $PORT
+    envVars:
+      - key: CWA_AUTH_CODE
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false

@@ -19,6 +19,7 @@ load_dotenv()
 st.set_page_config(page_title="台灣衝浪 RAG 智能助手", layout="wide")
 
 st.title("台灣衝浪智能助手")
+st.info("首次開啟可能需 30~90 秒（Render 冷啟動），請稍候。")
 st.caption(
     "左側預報優先使用氣象署「鄉鎮沿海」F-D0047-095（逐 3 小時，較貼近岸邊代表點），"
     "失敗時自動改為近海大區 F-A0012-001；中間地圖為視覺工具；"

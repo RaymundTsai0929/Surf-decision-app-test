@@ -29,25 +29,8 @@ st.markdown(
         margin:0 0 12px 0;
         font-size:14px;
     ">
-      首次開啟時間較久，請燒等
-      <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+      首次開啟可能需 30~90 秒（Render 冷啟動），請稍候。
     </div>
-    <style>
-      .loading-dots span {
-        display: inline-block;
-        width: 8px;
-        text-align: center;
-        animation: loadingDot 1.2s infinite ease-in-out;
-        opacity: 0.25;
-      }
-      .loading-dots span:nth-child(1) { animation-delay: 0s; }
-      .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-      .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-      @keyframes loadingDot {
-        0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
-        40% { opacity: 1; transform: translateY(-2px); }
-      }
-    </style>
     <script>
       setTimeout(function () {
         const el = document.getElementById('cold-start-notice');

@@ -32,7 +32,7 @@ export default function App() {
   }
 
   return (
-    <PhoneFrame>
+    <PhoneFrame landscape={screen === 1 && !!selectedSpot}>
       {!selectedSpot ? (
         <TaiwanMap onSelectSpot={(spot) => { setSelectedSpot(spot); setScreen(0) }} />
       ) : (

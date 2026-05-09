@@ -42,7 +42,8 @@
       "Bash(curl -s http://localhost:8001/health)",
       "Bash(curl -s http://localhost:5173)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   }
 }

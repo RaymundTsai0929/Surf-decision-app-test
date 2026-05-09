@@ -135,8 +135,9 @@ export default function DataTable({ hourly, currentHour }: Props) {
 
   if (!hourly.length) {
     return (
-      <div className="flex items-center justify-center h-full text-gray-500 text-sm">
-        數據載入中...
+      <div className="flex flex-col items-center justify-center h-full gap-2">
+        <span className="text-gray-500 text-sm">無法取得氣象數據</span>
+        <span className="text-gray-600 text-xs">（伺服器未連線）</span>
       </div>
     )
   }

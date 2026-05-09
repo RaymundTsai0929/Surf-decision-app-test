@@ -1,9 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 
-const PHONE_W = 390
-const PHONE_H = 844
+interface Props {
+  children: ReactNode
+  landscape?: boolean
+}
 
-export default function PhoneFrame({ children }: { children: ReactNode }) {
+export default function PhoneFrame({ children, landscape = false }: Props) {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 500)
 
   useEffect(() => {
@@ -14,14 +16,19 @@ export default function PhoneFrame({ children }: { children: ReactNode }) {
 
   if (!isDesktop) return <>{children}</>
 
+  const w = landscape ? 844 : 390
+  const h = landscape ? 390 : 844
+
   return (
     <div className="flex items-center justify-center w-screen h-screen bg-gray-900">
       <div
-        style={{ width: PHONE_W, height: PHONE_H }}
+        style={{ width: w, height: h, transition: 'width 0.35s ease, height 0.35s ease' }}
         className="relative rounded-[48px] overflow-hidden border-4 border-gray-700 shadow-2xl bg-black"
       >
-        {/* notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-2xl z-50" />
+        {/* notch — only in portrait */}
+        {!landscape && (
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-b-2xl z-50" />
+        )}
         <div className="w-full h-full overflow-hidden">
           {children}
         </div>

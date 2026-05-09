@@ -27,10 +27,20 @@ export function useCWAData(spotId: string) {
     if (!spotId) return
     setLoading(true)
     setError(null)
-    fetch(`/api/v1/conditions?spot=${encodeURIComponent(spotId)}`)
-      .then(r => r.json())
+
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 6000)
+
+    fetch(`/api/v1/conditions?spot=${encodeURIComponent(spotId)}`, { signal: controller.signal })
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
       .then(d => { setData(d); setLoading(false) })
       .catch(e => { setError(e.message); setLoading(false) })
+      .finally(() => clearTimeout(timeout))
+
+    return () => { controller.abort(); clearTimeout(timeout) }
   }, [spotId])
 
   return { data, loading, error }

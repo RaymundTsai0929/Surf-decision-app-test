@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { ChevronLeft } from 'lucide-react'
 import type { Spot } from '../data/spots'
 import { useCWAData } from '../hooks/useCWAData'
 import { useClaudeStory } from '../hooks/useClaudeStory'
@@ -12,9 +13,10 @@ interface Props {
   spot: Spot
   sarSpeedMs: number | null
   endpointDangerous: boolean
+  onNavigateToData?: () => void
 }
 
-export default function Screen2Landscape({ spot, sarSpeedMs, endpointDangerous }: Props) {
+export default function Screen2Landscape({ spot, sarSpeedMs, endpointDangerous, onNavigateToData }: Props) {
   const { data } = useCWAData(spot.id)
   const { narrative, loading, error, fetchStory } = useClaudeStory()
 
@@ -35,7 +37,7 @@ export default function Screen2Landscape({ spot, sarSpeedMs, endpointDangerous }
   const videoSrc = `/video/${spot.id}.mp4`
 
   return (
-    <div className="w-full h-full flex bg-gray-900 text-white">
+    <div className="w-full h-full flex bg-gray-900 text-white relative">
       {/* Video — 61.8% golden ratio */}
       <div style={{ width: '61.8%' }} className="relative flex-shrink-0">
         <VideoPlayer src={videoSrc} />
@@ -62,6 +64,17 @@ export default function Screen2Landscape({ spot, sarSpeedMs, endpointDangerous }
           />
         </div>
       </div>
+
+      {/* Navigate back button */}
+      {onNavigateToData && (
+        <button
+          onClick={onNavigateToData}
+          className="absolute top-1/2 left-4 -translate-y-1/2 z-[600] bg-[#3b82f6] hover:bg-[#2563eb] text-white p-3 rounded-full shadow-lg transition-all active:scale-95"
+          aria-label="返回數據視圖"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+      )}
     </div>
   )
 }

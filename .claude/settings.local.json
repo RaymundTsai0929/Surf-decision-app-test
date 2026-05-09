@@ -41,7 +41,8 @@
       "Bash(git remote *)",
       "Bash(curl -s http://localhost:8001/health)",
       "Bash(curl -s http://localhost:5173)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

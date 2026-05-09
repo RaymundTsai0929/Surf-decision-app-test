@@ -5,84 +5,76 @@ interface Props {
   driftSpeed: number | null
 }
 
-interface Slice {
+interface Metric {
   label: string
   value: string
   unit: string
   color: string
 }
 
-function buildSlices(snapshot: CWASnapshot | null, driftSpeed: number | null): Slice[] {
+function buildMetrics(snapshot: CWASnapshot | null, driftSpeed: number | null): Metric[] {
   const fmt = (v: number | null, d = 1) => v === null ? '--' : v.toFixed(d)
   return [
-    { label: '浪高', value: fmt(snapshot?.wave_height ?? null), unit: 'm', color: '#3b82f6' },
-    { label: '週期', value: fmt(snapshot?.wave_period ?? null), unit: 's', color: '#6366f1' },
-    { label: '風速', value: fmt(snapshot?.wind_speed ?? null), unit: 'm/s', color: '#22c55e' },
-    { label: '陣風', value: fmt(snapshot?.gust ?? null), unit: 'm/s', color: '#84cc16' },
-    { label: '漂流速', value: fmt(driftSpeed, 2), unit: 'm/s', color: '#facc15' },
+    { label: '浪高',  value: fmt(snapshot?.wave_height ?? null), unit: 'm',   color: '#3b82f6' },
+    { label: '週期',  value: fmt(snapshot?.wave_period ?? null), unit: 's',   color: '#6366f1' },
+    { label: '風速',  value: fmt(snapshot?.wind_speed ?? null),  unit: 'm/s', color: '#22c55e' },
+    { label: '陣風',  value: fmt(snapshot?.gust ?? null),        unit: 'm/s', color: '#84cc16' },
+    { label: '漂流速', value: fmt(driftSpeed, 2),                 unit: 'm/s', color: '#facc15' },
   ]
 }
 
-// Draw a single arc path for a pie slice
-function slicePath(cx: number, cy: number, r: number, startAngle: number, endAngle: number): string {
-  const toRad = (a: number) => (a - 90) * (Math.PI / 180)
-  const x1 = cx + r * Math.cos(toRad(startAngle))
-  const y1 = cy + r * Math.sin(toRad(startAngle))
-  const x2 = cx + r * Math.cos(toRad(endAngle))
-  const y2 = cy + r * Math.sin(toRad(endAngle))
-  const large = endAngle - startAngle > 180 ? 1 : 0
-  return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`
-}
-
 export default function PizzaChart({ snapshot, driftSpeed }: Props) {
-  const slices = buildSlices(snapshot, driftSpeed)
-  const n = slices.length
-  const angleEach = 360 / n
-  const cx = 80, cy = 80, r = 68, innerR = 34
+  const metrics = buildMetrics(snapshot, driftSpeed)
+  const total = metrics.length
+  const sliceAngle = (2 * Math.PI) / total
+  const outerRadius = 70
+  const innerRadius = 45
+  const cx = 80
+  const cy = 80
+
+  const createArc = (startAngle: number, endAngle: number) => {
+    const x1 = cx + outerRadius * Math.cos(startAngle)
+    const y1 = cy + outerRadius * Math.sin(startAngle)
+    const x2 = cx + outerRadius * Math.cos(endAngle)
+    const y2 = cy + outerRadius * Math.sin(endAngle)
+    const x3 = cx + innerRadius * Math.cos(endAngle)
+    const y3 = cy + innerRadius * Math.sin(endAngle)
+    const x4 = cx + innerRadius * Math.cos(startAngle)
+    const y4 = cy + innerRadius * Math.sin(startAngle)
+    return `M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 0 0 ${x4} ${y4} Z`
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full gap-1 py-2">
-      <svg width={160} height={160} viewBox="0 0 160 160">
-        {slices.map((s, i) => {
-          const start = i * angleEach
-          const end = start + angleEach
-          const mid = ((start + end) / 2 - 90) * (Math.PI / 180)
-          const labelR = r * 0.65
-          const lx = cx + labelR * Math.cos(mid)
-          const ly = cy + labelR * Math.sin(mid)
+    <div className="w-full h-full flex flex-col items-center justify-center bg-[#111827] p-4">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        {metrics.map((m, i) => {
+          const startAngle = i * sliceAngle - Math.PI / 2
+          const endAngle = (i + 1) * sliceAngle - Math.PI / 2
+          const midAngle = (startAngle + endAngle) / 2
+          const textX = cx + (outerRadius - 15) * Math.cos(midAngle)
+          const textY = cy + (outerRadius - 15) * Math.sin(midAngle)
           return (
-            <g key={s.label}>
-              <path d={slicePath(cx, cy, r, start, end)} fill={s.color} opacity={0.85} />
-              {/* inner cut for donut */}
-              <path d={slicePath(cx, cy, innerR, start, end)} fill="#111827" />
-              {/* value label on slice */}
-              <text
-                x={lx} y={ly - 4}
-                textAnchor="middle" dominantBaseline="middle"
-                fontSize="9" fill="white" fontWeight="600"
-              >
-                {s.value}
+            <g key={m.label}>
+              <path d={createArc(startAngle, endAngle)} fill={m.color} opacity={0.85} />
+              <text x={textX} y={textY - 2} textAnchor="middle" fill="white" fontSize="9" fontWeight="600">
+                {m.value}
               </text>
-              <text
-                x={lx} y={ly + 6}
-                textAnchor="middle" dominantBaseline="middle"
-                fontSize="7" fill="white" opacity="0.7"
-              >
-                {s.unit}
+              <text x={textX} y={textY + 7} textAnchor="middle" fill="white" fontSize="7" opacity="0.8">
+                {m.unit}
               </text>
             </g>
           )
         })}
-        {/* center */}
-        <circle cx={cx} cy={cy} r={innerR - 2} fill="#111827" />
+        {/* center hole */}
+        <circle cx={cx} cy={cy} r={innerRadius - 2} fill="#111827" />
       </svg>
 
       {/* Legend */}
-      <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 px-2">
-        {slices.map(s => (
-          <div key={s.label} className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: s.color }} />
-            <span className="text-xs text-gray-300">{s.label}</span>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 justify-center mt-3">
+        {metrics.map(m => (
+          <div key={m.label} className="flex items-center gap-1.5">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: m.color }} />
+            <span className="text-[#9ca3af] text-xs">{m.label}</span>
           </div>
         ))}
       </div>

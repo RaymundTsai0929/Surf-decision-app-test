@@ -53,6 +53,7 @@ export default function App() {
                     setSarSpeedMs(speed)
                     setEndpointDangerous(dangerous)
                   }}
+                  onNavigateToAnalysis={() => setScreen(1)}
                 />
               </motion.div>
             ) : (
@@ -68,6 +69,7 @@ export default function App() {
                   spot={selectedSpot}
                   sarSpeedMs={sarSpeedMs}
                   endpointDangerous={endpointDangerous}
+                  onNavigateToData={() => setScreen(0)}
                 />
               </motion.div>
             )}

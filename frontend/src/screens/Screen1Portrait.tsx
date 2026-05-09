@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import L from 'leaflet'
+import { ChevronRight } from 'lucide-react'
 import type { Spot } from '../data/spots'
 import { useCWAData } from '../hooks/useCWAData'
 import SatelliteMap from '../components/SatelliteMap'
@@ -15,9 +16,10 @@ interface DriftResult {
 interface Props {
   spot: Spot
   onSarResult?: (speedMs: number, dangerous: boolean) => void
+  onNavigateToAnalysis?: () => void
 }
 
-export default function Screen1Portrait({ spot, onSarResult }: Props) {
+export default function Screen1Portrait({ spot, onSarResult, onNavigateToAnalysis }: Props) {
   const { data, loading } = useCWAData(spot.id)
   const [map, setMap] = useState<L.Map | null>(null)
   const [showParticles, setShowParticles] = useState(true)
@@ -104,6 +106,17 @@ export default function Screen1Portrait({ spot, onSarResult }: Props) {
           <DataTable hourly={data?.hourly ?? []} />
         )}
       </div>
+
+      {/* Navigate to analysis button */}
+      {onNavigateToAnalysis && (
+        <button
+          onClick={onNavigateToAnalysis}
+          className="absolute top-1/2 right-4 -translate-y-1/2 z-[600] bg-[#3b82f6] hover:bg-[#2563eb] text-white p-3 rounded-full shadow-lg transition-all active:scale-95"
+          aria-label="前往影像分析"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      )}
     </div>
   )
 }

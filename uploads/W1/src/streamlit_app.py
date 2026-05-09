@@ -21,40 +21,40 @@ st.set_page_config(page_title="台灣衝浪 RAG 智能助手", layout="wide")
 st.markdown(
     """
     <style>
-      #center-loading-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(2, 6, 23, 0.32);
-        backdrop-filter: blur(1px);
+      #cold-start-notice .loading-dots span {
+        opacity: 0.2;
+        animation: dotPulse 1.2s infinite;
+        display: inline-block;
+        width: 8px;
+        text-align: center;
       }
-      #center-loading-overlay .spinner {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        border: 4px solid rgba(148, 163, 184, 0.35);
-        border-top-color: #38bdf8;
-        animation: spin 0.9s linear infinite;
-      }
-      @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
+      #cold-start-notice .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+      #cold-start-notice .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes dotPulse {
+        0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
+        40% { opacity: 1; transform: translateY(-1px); }
       }
     </style>
-    <div id="center-loading-overlay" aria-hidden="true">
-      <div class="spinner"></div>
+    <div id="cold-start-notice" style="
+        background:#1e293b;
+        color:#e2e8f0;
+        border:1px solid #334155;
+        border-radius:8px;
+        padding:10px 12px;
+        margin:0 0 12px 0;
+        font-size:14px;
+    ">
+      首次開啟時間較久，請稍等
+      <span class="loading-dots"><span>•</span><span>•</span><span>•</span></span>
     </div>
     <script>
       setTimeout(function () {
-        const el = document.getElementById('center-loading-overlay');
+        const el = document.getElementById('cold-start-notice');
         if (!el) return;
-        el.style.transition = 'opacity 0.35s ease';
+        el.style.transition = 'opacity 0.6s ease';
         el.style.opacity = '0';
-        setTimeout(function () { el.remove(); }, 380);
-      }, 3000);
+        setTimeout(function () { el.remove(); }, 650);
+      }, 10000);
     </script>
     """,
     unsafe_allow_html=True,
